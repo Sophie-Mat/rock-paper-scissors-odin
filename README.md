@@ -1,37 +1,44 @@
 # Rock Paper Scissors
 
-A JavaScript implementation of the classic Rock Paper Scissors game from [The Odin Project Foundations Course](https://www.theodinproject.com/lessons/foundations-rock-paper-scissors).
+This project started as a simple [Rock Paper Scissors game](https://www.theodinproject.com/lessons/foundations-rock-paper-scissors) that used `prompt()` for input and `alert()` for displaying results. It has been enhanced and refactored into a fully interactive DOM-based application with a clean button interface, following [The Odin Project lesson: Revisiting Rock Paper Scissors](https://www.theodinproject.com/lessons/foundations-revisiting-rock-paper-scissors).
 
-## Project Overview
+## Overview
 
-This project implements a fully functional Rock Paper Scissors game where a player competes against the computer over 5 rounds. The game tracks scores and declares a winner at the end.
+Click **Rock**, **Paper**, or **Scissors** to play against the computer. Results display on the page, the score updates live, and the game ends when someone reaches **5 points**. Click **Play Again** to reset and replay.
 
 ## How to Play
 
-1. Open `index.html` in your web browser
-2. When prompted, enter your choice: **rock**, **paper**, or **scissors**
-3. Play 5 rounds against the computer
-4. The winner is determined by the highest score after 5 rounds
+1. Open `index.html` in your browser.
+2. Click one of the three buttons: **Rock**, **Paper**, or **Scissors**.
+   - **Keyboard shortcut** (bonus): Press **R** for Rock, **P** for Paper, or **S** for Scissors
+3. The round result appears on the page with the updated score.
+4. First player to **5 points** wins!
+5. Click **Play Again** to reset and play again.
 
-**Note:** If the prompt doesn't appear on first load, try reloading the page.
+## Game Rules
 
-## Features Implemented
+- 🪨 Rock beats ✂️ Scissors
+- 📄 Paper beats 🪨 Rock
+- ✂️ Scissors beat 📄 Paper
+- Same choice = Tie (no points awarded)
 
-### Core Requirements ✓
-- `getComputerChoice()` - Randomly returns rock, paper, or scissors
-- `getHumanChoice()` - Gets user input
-- `playRound()` - Handles single round logic and score tracking
-- `playGame()` - Runs 5 complete rounds and declares a winner
-- Score tracking with `humanScore` and `computerScore` variables
-- Case-insensitive input handling
+## Features
 
-### Beyond Requirements ⭐
-The following features go beyond the project specifications:
+### Assignment Requirements ✓
 
-1. **Interactive UI with Prompts and Alerts** - The base project specified playing entirely in the console. This implementation uses browser `prompt()` and `alert()` for a more user-friendly experience.
+- **Three button UI** - Players click buttons instead of using prompts
+- **Event listeners** - Each button triggers `playRound()` with the correct choice
+- **DOM-based results** - Game displays results in an HTML div, not console-only
+- **Running score display** - Score updates after each round
+- **Winner announcement** - Game declares a winner when a player reaches 5 points
 
-2. **Input Validation with Retry Logic** - The project stated "You do not need to handle reprompting if the user enters an invalid input." This implementation automatically prompts the user again if they enter an invalid choice.
+### Extra Features (Beyond Requirements) ⭐
 
-3. **Graceful Cancellation Handling** - Detects when users cancel the prompt and exits the game cleanly instead of crashing.
-
-4. **Better Error Prevention** - Includes null checks and defensive programming practices to prevent runtime errors.
+- **Round history** - Each round appended as `Round X: ...` (nothing gets overwritten)
+- **Button state management** - Choice buttons disabled when game ends
+- **Reset functionality** - "Play Again" button resets scores and clears round history
+- **Keyboard support** - Press **R**, **P**, or **S** keys to play without clicking buttons
+- **Safe DOM clearing** - Uses `replaceChildren()` instead of `innerHTML`
+- **Code organization** - Constants (`WINNING_SCORE`, `CHOICES`), helper functions (`toggleButtons()`, `scoreText()`)
+- **Clean architecture** - Separate functions for different responsibilities
+- **DRY principles** - Eliminates code duplication with reusable functions

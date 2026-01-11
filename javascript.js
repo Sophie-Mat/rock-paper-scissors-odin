@@ -1,73 +1,135 @@
+const CHOICES = ['rock', 'paper', 'scissors'];
+const WINNING_SCORE = 5;
+
 function getComputerChoice() {
-    const options = ['rock', 'paper', 'scissors'];
-    return options[Math.floor(Math.random()*options.length)];
+    return CHOICES[Math.floor(Math.random() * CHOICES.length)];
 }
 
-function getHumanChoice() {
-    let choice;
-    do {
-        choice = prompt("Choose rock, or paper, or scissors.");
-        if (choice === null) return null;
-        choice = choice.toLowerCase();
-    } while (!(choice === 'rock' || choice === 'paper' || choice === 'scissors'))
-    return choice;
-}
+const rock = document.querySelector("#rock");
+const paper = document.querySelector("#paper");
+const scissors = document.querySelector("#scissors");
+const results_container = document.querySelector("#results_container");
 
 let humanScore = 0;
 let computerScore = 0;
+let roundNumber = 0;
+
+const scoreDisplay = document.createElement("p");
+scoreDisplay.classList.add("score-display");
+scoreDisplay.style.fontWeight = "bold";
+scoreDisplay.textContent = scoreText(humanScore, computerScore);
+
+results_container.appendChild(scoreDisplay);
+
+function winMessage(humanChoice, computerChoice){
+    return `You win! ${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)} beat(s) ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}. 🎉`;
+}
+
+function loseMessage(computerChoice, humanChoice){
+    return `You lose! ${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beat(s) ${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)}... 😧`;
+}
+
+function scoreText(humanScore, computerScore){
+    return `👱 Human ${humanScore} - ${computerScore} Computer 🖥️`;
+}
 
 function playRound(humanChoice, computerChoice) {
-    switch (humanChoice){
-        case computerChoice:
-            alert("It's a tie!");
-            break;
-        case 'rock':
-            if (computerChoice === 'scissors'){
-                alert("You win! Rock beats Scissors.");
-                humanScore++;
-            }else{
-                alert("You lose! Paper beats Rock.");
-                computerScore++;
-            }
-            break;
-        case 'paper':
-            if (computerChoice === 'rock'){
-                alert("You win! Paper beats Rock.");
-                humanScore++;
-            } else {
-                alert("You lose! Scissors beat Paper.");
-                computerScore++;
-            }
-            break;
-        case 'scissors':
-            if (computerChoice === 'paper'){
-                alert("You win! Scissors beat Paper.");
-                humanScore++;
-            }else{
-                alert("You lose! Rock beats Scissors.");
-                computerScore++;
-            }
-            break;
-    }
-}
-
-function playGame(){
-    for (let i = 0; i < 5; i++){
-        const humanSelection = getHumanChoice();
-        if (humanSelection === null) return;
-        const computerSelection = getComputerChoice();
-        playRound(humanSelection, computerSelection);
+    if (humanChoice === computerChoice) {
+        return "It's a tie! 🤝";
     }
     
-    let text;
-    if (humanScore > computerScore){
-        text = "Congratulations! You won.";
-    }else if (humanScore < computerScore){
-        text = "You lost, but you can always try again!";
-    }else{
-        text = "It's a tie!"
+    const winConditions = {
+        rock: 'scissors',
+        paper: 'rock', 
+        scissors: 'paper'
+    };
+    
+    const isWin = winConditions[humanChoice] === computerChoice;
+    
+    if (isWin) {
+        humanScore++;
+        return winMessage(humanChoice, computerChoice);
+    } else {
+        computerScore++;
+        return loseMessage(computerChoice, humanChoice);
     }
-    alert(`${text}\n\nFinal Score: \nHuman: ${humanScore} || Computer: ${computerScore}`);
 }
 
-playGame();
+rock.addEventListener("click", () => handleChoice("rock"));
+paper.addEventListener("click", () => handleChoice("paper"));
+scissors.addEventListener("click", () => handleChoice("scissors"));
+
+//nice to have: keyboard support
+document.addEventListener('keydown', (e) => {
+    if (rock.disabled && paper.disabled && scissors.disabled) return; 
+    
+    switch(e.key.toLowerCase()) { // Use toLowerCase to handle uppercase inputs
+        case 'r': handleChoice('rock'); break;
+        case 'p': handleChoice('paper'); break;
+        case 's': handleChoice('scissors'); break;
+    }
+});
+
+function handleChoice(choice) {
+    const computerSelection = getComputerChoice();
+    const gameResult = playRound(choice, computerSelection);
+    updateDisplay(gameResult, choice, computerSelection);
+}
+
+function updateDisplay(gameResult, humanChoice, computerChoice) {
+    roundNumber++;
+    
+    const humanEmoji = (humanChoice === 'rock') ? '✊' : (humanChoice === 'paper') ? '✋' : '✌️';
+    const computerEmoji = (computerChoice === 'rock') ? '✊' : (computerChoice === 'paper') ? '✋' : '✌️';
+    const roundElement = document.createElement("p");
+    roundElement.classList.add("round-result");
+    roundElement.textContent = `${roundNumber} ${humanEmoji} vs ${computerEmoji} : ${gameResult}`;
+    
+    scoreDisplay.textContent = scoreText(humanScore, computerScore);
+    
+    results_container.appendChild(roundElement);
+
+    if (humanScore === WINNING_SCORE || computerScore === WINNING_SCORE){
+        endResult();
+    }
+}
+
+function toggleButtons(disabled) {
+    [rock, paper, scissors].forEach(button => {
+        button.disabled = disabled;
+        button.classList.toggle('disabled', disabled);
+    });
+}
+
+function endResult(){
+    toggleButtons(true);
+
+    const final_score = document.createElement("h4");
+    final_score.classList.add("final-score");
+    
+    if (humanScore > computerScore){
+        final_score.textContent = "Congratulations! You won. 🎉";
+    }else{
+        final_score.textContent = "You lost, but you can always play again! 🫂";
+    }
+
+    const retry = document.createElement("button");
+    retry.classList.add("retry");
+    retry.textContent = "Play Again";
+    
+    retry.addEventListener("click", resetGame);
+
+    results_container.appendChild(final_score);
+    results_container.appendChild(retry);
+}
+
+function resetGame() {
+    humanScore = 0;
+    computerScore = 0;
+    roundNumber = 0;
+    
+    toggleButtons(false);
+    scoreDisplay.textContent = scoreText(humanScore, computerScore);
+    results_container.replaceChildren(scoreDisplay);
+}
+
