@@ -42,3 +42,7 @@ Click **Rock**, **Paper**, or **Scissors** to play against the computer. Results
 - **Code organization** - Constants (`WINNING_SCORE`, `CHOICES`), helper functions (`toggleButtons()`, `scoreText()`)
 - **Clean architecture** - Separate functions for different responsibilities
 - **DRY principles** - Eliminates code duplication with reusable functions
+
+## Live Preview
+
+🎮 **[Play the Game Here](https://sophie-mat.github.io/rock-paper-scissors-odin/)**
